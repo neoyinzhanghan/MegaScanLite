@@ -3,6 +3,7 @@ import os
 import csv
 import openslide
 from openslide import OpenSlideError
+from tqdm import tqdm
 
 def list_ndpi_files(directory):
     """ List all .ndpi files in the directory """
@@ -26,7 +27,7 @@ def compile_mpp_data(directory):
         writer = csv.writer(file)
         writer.writerow(['Filename', 'Level_0_MPP'])
         
-        for ndpi_file in ndpi_files:
+        for ndpi_file in tqdm(ndpi_files, desc='Compiling MPP Data'):
             file_path = os.path.join(directory, ndpi_file)
             mpp_x = get_mpp(file_path)
             writer.writerow([ndpi_file, mpp_x])
