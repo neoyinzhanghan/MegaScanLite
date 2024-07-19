@@ -89,11 +89,15 @@ class MSScanner:
         ), f"Scan level height {self.scan_level_height} is not an integer"
 
         # if the level_0 dimension of hte focus region is not divisible by the downsample factor, raise an error
-        assert (
-            round(self.focus_regions_level_0_height % self.downsample_factor_from_level_0, 3) == float(0)
+        assert round(
+            self.focus_regions_level_0_height % self.downsample_factor_from_level_0, 3
+        ) == float(
+            0
         ), f"Focus region height {self.focus_regions_level_0_height} is not divisible by the downsample factor {self.downsample_factor_from_level_0}, when scanning at {self.scan_mpp} mpp and the level 0 dimensions are {level_0_width} x {level_0_height} at {self.level_0_mpp} mpp"
-        assert (
-            round(self.focus_regions_level_0_width % self.downsample_factor_from_level_0, 3) == float(0)
+        assert round(
+            self.focus_regions_level_0_width % self.downsample_factor_from_level_0, 3
+        ) == float(
+            0
         ), f"Focus region width {self.focus_regions_level_0_width} is not divisible by the downsample factor {self.downsample_factor_from_level_0}, when scanning at {self.scan_mpp} mpp, and the level 0 dimensions are {level_0_width} x {level_0_height} at {self.level_0_mpp} mpp"
 
         # calculate the focus region dimensions at the scan level
@@ -192,6 +196,11 @@ class MSScanner:
 
 
 if __name__ == "__main__":
+
+    ray_tmp_dir = "/media/hdd1/neo/BMA_AML_lite/ray_tmp"
+
+    os.environ["RAY_TEMP_DIR"] = ray_tmp_dir
+
     wsi_path = (
         "/media/hdd1/neo/BMA_AML_lite/H23-568;S13;MSK1 - 2023-08-24 22.09.58.ndpi"
     )
