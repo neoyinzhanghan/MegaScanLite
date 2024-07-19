@@ -2,10 +2,10 @@ import os
 import ray
 import openslide
 from tqdm import tqdm
-from MSFocusRegion import FocusRegion
+from MS.MSFocuRegion import FocusRegion
 from utils import crop_image_at_mpp, create_list_of_batches_from_list
 from config import *
-from RegionCropManager import WSICropper
+from MS.RegionCropManager import WSICropper
 from tqdm import tqdm
 
 
