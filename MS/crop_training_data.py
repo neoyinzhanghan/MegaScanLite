@@ -63,16 +63,15 @@ for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances"):
     try:
         slide = openslide.OpenSlide(str(slide_path))
         best_level = slide.get_best_level_for_downsample(
-            slide.properties["openslide.mpp-x"] / desired_mpp
+            desired_mpp / float(slide.properties["openslide.mpp-x"])
         )
 
-        best_level_mpp = float(slide.properties["openslide.mpp-x"]) / (
-            2**best_level
-        )  # MPP at the best level
+        scale_factor_best_level = slide.level_downsamples[best_level]
+        best_level_mpp = (
+            float(slide.properties["openslide.mpp-x"]) * scale_factor_best_level
+        )
 
         downsample_factor_from_best_level = desired_mpp / best_level_mpp
-
-        scale_factor_best_level = slide.level_downsamples[best_level]
 
         # Convert the coordinates and sizes to the best level
         scaled_best_level_center_x = int(center_x / scale_factor_best_level)
