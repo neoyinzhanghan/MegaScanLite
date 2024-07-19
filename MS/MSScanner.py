@@ -90,10 +90,10 @@ class MSScanner:
 
         # if the level_0 dimension of hte focus region is not divisible by the downsample factor, raise an error
         assert (
-            self.focus_regions_level_0_height % self.downsample_factor_from_level_0 == 0
+            round(self.focus_regions_level_0_height % self.downsample_factor_from_level_0, 3) == float(0)
         ), f"Focus region height {self.focus_regions_level_0_height} is not divisible by the downsample factor {self.downsample_factor_from_level_0}, when scanning at {self.scan_mpp} mpp and the level 0 dimensions are {level_0_width} x {level_0_height} at {self.level_0_mpp} mpp"
         assert (
-            self.focus_regions_level_0_width % self.downsample_factor_from_level_0 == 0
+            round(self.focus_regions_level_0_width % self.downsample_factor_from_level_0, 3) == float(0)
         ), f"Focus region width {self.focus_regions_level_0_width} is not divisible by the downsample factor {self.downsample_factor_from_level_0}, when scanning at {self.scan_mpp} mpp, and the level 0 dimensions are {level_0_width} x {level_0_height} at {self.level_0_mpp} mpp"
 
         # calculate the focus region dimensions at the scan level
