@@ -22,8 +22,8 @@ class MSScanner:
     - scan_level_height
     - focus_regions_level_0_height
     - focus_regions_level_0_width
-    - focus_regions_scan_level_height
-    - focus_regions_scan_level_width
+    - focus_regions_scan_mpp_height
+    - focus_regions_scan_mpp_width
     - focus_regions_level_0_mpp
     - focus_regions
     - level_0_coords
@@ -38,8 +38,8 @@ class MSScanner:
         self,
         wsi_path,
         scan_mpp,
-        focus_region_level_0_height,
-        focus_region_level_0_width,
+        focus_regions_scan_mpp_height,
+        focus_regions_scan_mpp_width,
         verbose=False,
         hoarding=False,
         result_dir=None,
@@ -52,8 +52,8 @@ class MSScanner:
         self.verbose = verbose
         self.hoarding = hoarding
         self.result_dir = result_dir
-        self.focus_regions_level_0_height = focus_region_level_0_height
-        self.focus_regions_level_0_width = focus_region_level_0_width
+        self.focus_region_scan_mpp_height = focus_region_scan_mpp_height
+        self.focus_region_scan_mpp_width = focus_region_scan_mpp_width
 
         # first open the wsi
         wsi = openslide.OpenSlide(self.wsi_path)
@@ -88,25 +88,13 @@ class MSScanner:
             self.scan_level_height.is_integer()
         ), f"Scan level height {self.scan_level_height} is not an integer"
 
-        # if the level_0 dimension of hte focus region is not divisible by the downsample factor, raise an error
-        assert round(
-            self.focus_regions_level_0_height % self.downsample_factor_from_level_0, 3
-        ) == float(
-            0
-        ), f"Focus region height {self.focus_regions_level_0_height} is not divisible by the downsample factor {self.downsample_factor_from_level_0}, when scanning at {self.scan_mpp} mpp and the level 0 dimensions are {level_0_width} x {level_0_height} at {self.level_0_mpp} mpp"
-        assert round(
-            self.focus_regions_level_0_width % self.downsample_factor_from_level_0, 3
-        ) == float(
-            0
-        ), f"Focus region width {self.focus_regions_level_0_width} is not divisible by the downsample factor {self.downsample_factor_from_level_0}, when scanning at {self.scan_mpp} mpp, and the level 0 dimensions are {level_0_width} x {level_0_height} at {self.level_0_mpp} mpp"
-
         # calculate the focus region dimensions at the scan level
-        self.focus_regions_scan_level_height = int(
-            self.focus_regions_level_0_height / self.downsample_factor_from_level_0
+        self.focus_regions_level_0_height = int(
+            self.focus_regions_scan_level_height * self.downsample_factor_from_level_0
         )
 
-        self.focus_regions_scan_level_width = int(
-            self.focus_regions_level_0_width / self.downsample_factor_from_level_0
+        self.focus_regions_level_0_width = int(
+            self.focus_regions_scan_level_width * self.downsample_factor_from_level_0
         )
 
         # use the scan level dimensions to get the list of all (TL_x, TL_y) coordinates of the focus regions at level 0 and the scan level
@@ -193,6 +181,10 @@ class MSScanner:
         ray.shutdown()
 
         self.focus_regions = new_focus_regions
+
+    def scan_at_scan_mpp(self):
+        """Scan the focus regions at the scan mpp."""
+        pass
 
 
 if __name__ == "__main__":

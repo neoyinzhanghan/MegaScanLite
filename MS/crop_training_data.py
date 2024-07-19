@@ -11,8 +11,8 @@ cellname = "PL1"
 cell_data_path = "/media/ssd2/clinical_text_data/MegakaryoctePltClumpProject/slides_with_pl_cells_renamed.csv"
 slide_folder = "/dmpisilon_tools/Greg/SF_Data/Pathology Images"
 save_dir = "/media/hdd3/neo/PL1_cell_scan_training_data"
-desired_mpp = 0.5  # Microns per pixel
-num_regions_per_cell = 5
+desired_mpp = 0.2297952524300848  # Microns per pixel
+num_regions_per_cell = 10
 region_size = 512  # Region size at the desired_mpp
 
 if not os.path.exists(save_dir):
@@ -39,17 +39,28 @@ metadata = {
 current_index = 0
 problem_slides = []
 
+
 def find_file_recursive(slide_folder, slide_name):
     slide_folder_path = Path(slide_folder)
     for file_path in slide_folder_path.rglob(slide_name):
         return file_path
     return None
 
+
 def get_best_level_for_mpp(slide, desired_mpp):
-    mpps = [(level, abs(slide.properties[f"openslide.mpp-x"] / slide.level_downsamples[level] - desired_mpp))
-            for level in range(slide.level_count)]
+    mpps = [
+        (
+            level,
+            abs(
+                slide.properties[f"openslide.mpp-x"] / slide.level_downsamples[level]
+                - desired_mpp
+            ),
+        )
+        for level in range(slide.level_count)
+    ]
     best_level = min(mpps, key=lambda x: x[1])[0]
     return best_level
+
 
 for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances"):
     if row["cell_type"] != cellname:
@@ -84,10 +95,16 @@ for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances"):
         for _ in range(num_regions_per_cell):
             region_TL_x = random.randint(min_TL_x, max_TL_x)
             region_TL_y = random.randint(min_TL_y, max_TL_y)
-            region = slide.read_region((region_TL_x, region_TL_y), best_level, (scaled_region_size, scaled_region_size))
+            region = slide.read_region(
+                (region_TL_x, region_TL_y),
+                best_level,
+                (scaled_region_size, scaled_region_size),
+            )
             if region.mode == "RGBA":
                 region = region.convert("RGB")
-            region = region.resize((region_size, region_size), Image.ANTIALIAS)  # Resize to maintain the desired output size
+            region = region.resize(
+                (region_size, region_size), Image.ANTIALIAS
+            )  # Resize to maintain the desired output size
             region.save(os.path.join(save_dir, f"{current_index}.jpg"))
 
             metadata["data_idx"].append(current_index)
@@ -98,8 +115,12 @@ for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances"):
             metadata["cell_image_size"].append(cell_image_size)
             metadata["region_TL_x"].append(region_TL_x * scale_factor)
             metadata["region_TL_y"].append(region_TL_y * scale_factor)
-            metadata["region_BR_x"].append((region_TL_x + scaled_region_size) * scale_factor)
-            metadata["region_BR_y"].append((region_TL_y + scaled_region_size) * scale_factor)
+            metadata["region_BR_x"].append(
+                (region_TL_x + scaled_region_size) * scale_factor
+            )
+            metadata["region_BR_y"].append(
+                (region_TL_y + scaled_region_size) * scale_factor
+            )
             metadata["region_size"].append(region_size)
             metadata["center_x_rel"].append(center_x - region_TL_x * scale_factor)
             metadata["center_y_rel"].append(center_y - region_TL_y * scale_factor)
