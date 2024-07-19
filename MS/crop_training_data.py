@@ -47,7 +47,7 @@ def find_file_recursive(slide_folder, slide_name):
     return None
 
 
-for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances", total=len(df):
+for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances", total=len(df)):
     if row["cell_type"] != cellname:
         continue
     slide_name = row["slide_name"]
