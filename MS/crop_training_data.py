@@ -47,7 +47,7 @@ def find_file_recursive(slide_folder, slide_name):
     return None
 
 
-for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances"):
+for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances", total=len(df):
     if row["cell_type"] != cellname:
         continue
     slide_name = row["slide_name"]
@@ -63,7 +63,7 @@ for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances"):
     try:
         slide = openslide.OpenSlide(str(slide_path))
         best_level = slide.get_best_level_for_downsample(
-            desired_mpp / float(slide.properties["openslide.mpp-x"])
+            desired_mpp / float(slide.properties["openslide.mpp-x"]) / desired_mpp
         )
 
         scale_factor_best_level = slide.level_downsamples[best_level]
