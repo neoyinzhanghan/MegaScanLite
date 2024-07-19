@@ -199,6 +199,9 @@ if __name__ == "__main__":
 
     ray_tmp_dir = "/media/hdd1/neo/BMA_AML_lite/ray_tmp"
 
+    if not os.path.exists(ray_tmp_dir):
+        os.makedirs(ray_tmp_dir)
+
     os.environ["RAY_TEMP_DIR"] = ray_tmp_dir
 
     wsi_path = (
