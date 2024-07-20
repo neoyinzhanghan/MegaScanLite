@@ -118,8 +118,8 @@ for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances", total=len(df
 
             region = region.resize(
                 (
-                    region.size[0] // downsample_factor_from_best_level,
-                    region.size[1] // downsample_factor_from_best_level,
+                    int(region.size[0] // downsample_factor_from_best_level),
+                    int(region.size[1] // downsample_factor_from_best_level),
                 ),
                 Image.Resampling.LANCZOS,
             )
