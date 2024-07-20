@@ -115,17 +115,13 @@ for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances", total=len(df
             )
             if region.mode == "RGBA":
                 region = region.convert("RGB")
-            region = region.resize(
-                (region_size, region_size), Image.ANTIALIAS
-            )  # Resize to maintain the desired output size
 
-            # downsample the region to the desired mpp by reducing the size by downsample_factor_from_best_level
             region = region.resize(
                 (
-                    region_size // int(downsample_factor_from_best_level),
-                    region_size // int(downsample_factor_from_best_level),
+                    region.size[0] // downsample_factor_from_best_level,
+                    region.size[1] // downsample_factor_from_best_level,
                 ),
-                Image.ANTIALIAS,
+                Image.Resampling.LANCZOS,
             )
 
             assert region.size == (
@@ -165,12 +161,16 @@ for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances", total=len(df
             )
             current_index += 1
 
+        slide.close()
+
     except Exception as e:
         print(f"Problem with slide {slide_path}: {e}")
         problem_slides.append(str(slide_path))
         continue
-    finally:
-        slide.close()
+
+    # if keyboard interrupt then just end the loop
+    except KeyboardInterrupt:
+        raise KeyboardInterrupt
 
 metadata_df = pd.DataFrame(metadata)
 metadata_df.to_csv(os.path.join(save_dir, "metadata.csv"), index=False)
