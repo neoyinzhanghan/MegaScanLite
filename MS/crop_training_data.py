@@ -116,10 +116,21 @@ for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances", total=len(df
             if region.mode == "RGBA":
                 region = region.convert("RGB")
 
+            # if the difference between the region.size[0] // downsample_factor_from_best_level) and region_size is > 3, raise an error
+            assert (
+                abs(region.size[0] // downsample_factor_from_best_level - region_size)
+                <= 3
+            ), f"Region size is {region.size}, which is not equal to the desired region size {region_size}"
+
+            assert (
+                abs(region.size[1] // downsample_factor_from_best_level - region_size)
+                <= 3
+            ), f"Region size is {region.size}, which is not equal to the desired region size {region_size}"
+
             region = region.resize(
                 (
-                    int(region.size[0] // downsample_factor_from_best_level),
-                    int(region.size[1] // downsample_factor_from_best_level),
+                    region_size,
+                    region_size,
                 ),
                 Image.Resampling.LANCZOS,
             )
