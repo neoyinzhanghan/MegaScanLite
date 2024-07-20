@@ -165,6 +165,7 @@ for i, row in tqdm(df.iterrows(), desc="Processing Cell Instances", total=len(df
 
     except Exception as e:
         print(f"Problem with slide {slide_path}: {e}")
+        raise e
         problem_slides.append(str(slide_path))
         continue
 
