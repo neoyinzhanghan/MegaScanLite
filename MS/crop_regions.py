@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 slides_dirs = ["/media/hdd1/neo/BMA_AML", "/media/hdd2/neo/BMA_Normal"]
 # save_dir = "/media/hdd3/neo/bma_regions_crop"
+save_dir = "/media/hdd3/neo/PL1_cell_scan_training_data_non_pl1_v2"
 
 save_dir = "/media/hdd3/neo/bma_regions_crop_test"
 
@@ -28,7 +29,7 @@ for slides_dir in slides_dirs:
 print(f"Found {len(ndpi_slides)} slides")
 
 
-num_per_slide = 1
+num_per_slide = 50
 region_size = 512
 
 current_idx = 55333
@@ -94,9 +95,9 @@ for slide in tqdm(ndpi_slides, desc="Cropping From Slides"):
 # save the metadata
 metadata_df = pd.DataFrame(metadata)
 
-metadata_df.to_csv("crop_metadata.csv", index=False)
+metadata_df.to_csv(os.path.join(save_dir, "metadata.csv"), index=False)
 
 # save the problem slides to a text file
-with open("problem_slides.txt", "w") as file:
+with open(os.path.join(save_dir, "problem_slides.txt"), "w") as f:
     for slide in problem_slides:
-        file.write(f"{slide}\n")
+        f.write(f"{slide}\n")
