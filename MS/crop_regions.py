@@ -66,7 +66,7 @@ for slide in tqdm(ndpi_slides, desc="Cropping From Slides"):
                 region = region.convert("RGB")
 
             # save the region
-            region.save(f"region_{current_idx}.jpg")
+            region.save(os.path.join(save_dir, f"{current_idx}.jpg"))
 
             # save the metadata
             metadata["idx"].append(current_idx)
