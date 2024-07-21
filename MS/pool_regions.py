@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 
 data_dir = "/media/hdd3/neo/results_bma_v4"
-save_dir = "/media/hdd3/neo/PL1_cell_scan_training_data_non_pl1_v2"
+save_dir = "/media/hdd3/neo/PL1_cell_scan_training_data_non_pl1_v2_dup"
 
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
@@ -66,5 +66,5 @@ for folder in tqdm(subfolders, desc="Processing Subfolders"):
 
 metadata_df = pd.DataFrame(metadata)
 
-metadata_df.to_csv(os.path.join(save_dir, "metadata.csv"), index=False)
+metadata_df.to_csv(os.path.join(save_dir, "metadata_region_pool.csv"), index=False)
 print("Data compiled successfully.")
