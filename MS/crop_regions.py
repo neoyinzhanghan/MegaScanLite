@@ -61,6 +61,10 @@ for slide in tqdm(ndpi_slides, desc="Cropping From Slides"):
             # get the region
             region = slide_obj.read_region((TL_x, TL_y), 0, (region_size, region_size))
 
+            # if the region is RGBA, convert it to RGB
+            if region.mode == "RGBA":
+                region = region.convert("RGB")
+
             # save the region
             region.save(f"region_{current_idx}.jpg")
 
