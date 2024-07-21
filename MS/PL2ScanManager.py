@@ -5,6 +5,7 @@ import torch.optim.lr_scheduler as lr_scheduler
 import torch.nn.functional as F
 import albumentations as A
 import numpy as np
+import ray
 from torchvision.transforms.functional import to_pil_image, to_tensor
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.utils.data import DataLoader
@@ -24,7 +25,7 @@ default_config = {"lr": 3.56e-06}  # 1.462801279401232e-06}
 data_dir = "/home/cat/Documents/neo/PL1_data_v1_split"
 num_gpus = 3
 num_workers = 20
-downsample_factor = 1
+downsample_factor = 8
 batch_size = 8
 img_size = 512
 num_classes = 2
@@ -330,14 +331,66 @@ def model_create(path, num_classes=2):
     model = Myresnext50.load_from_checkpoint(path)
     return model
 
-def get_score_batch(model, images):
-    """ Images is a list of PIL images and model is a PL2 score model. 
+
+def get_score_batch(model, images, expected_image_size=None):
+    """Images is a list of PIL images and model is a PL2 score model.
     Feed the images into the model as a batch and return a tuple of the confidence scores for the positive class.
     Which is the score of the image containing a PL2 cell.
     """
-    
-    
-    pass #TODO
+
+    # Convert the images to tensors
+    images = [to_tensor(image) for image in images]
+
+    # if expected_image_size is not None, assert that all images have the same size
+    # assert that the image is a square image
+    assert all(
+        image.shape[1] == image.shape[2] for image in images
+    ), "Images must be square"
+
+    if expected_image_size is not None:
+        for image in images:
+            assert (
+                image.shape[1] == expected_image_size
+            ), f"Image size {image.shape[1]} does not match the expected size {expected_image_size}"
+
+    # Stack the images into a batch
+    images = torch.stack(images)
+
+    # Apply the model to the batch
+    scores = model(images)
+
+    # Extract the confidence scores for the positive class
+    positive_scores = scores[:, 1]
+
+    # convert to a tuple
+    positive_scores = tuple(positive_scores.detach().numpy())
+
+    return positive_scores
+
+
+@ray.remote
+class PL2Scanner:
+    """Class Attributes:
+    - model_path
+    - model
+    - expected_image_size
+    - scan_mpp
+    """
+
+    def __init__(self, model_path, expected_image_size, scan_mpp):
+        self.model_path = model_path
+        self.model = model_create(model_path)
+        self.expected_image_size = expected_image_size
+        self.scan_mpp = scan_mpp
+
+    def async_get_score_batch(self, focus_regions):
+        images = [region.mpp_to_image[self.scan_mpp] for region in focus_regions]
+        scores = get_score_batch(self.model, images, self.expected_image_size)
+
+        for region, score in zip(focus_regions, scores):
+            region.get_pl2_score(self.scan_mpp, score)
+
+        return focus_regions
 
 
 if __name__ == "__main__":

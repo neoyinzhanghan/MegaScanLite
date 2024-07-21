@@ -7,6 +7,7 @@ from utils import crop_image_at_mpp, create_list_of_batches_from_list
 from config import *
 from MS.RegionCropManager import WSICropper
 from tqdm import tqdm
+from MS.MSScanner import PL2Scanner
 
 
 class MSScanner:
@@ -184,7 +185,41 @@ class MSScanner:
 
     def scan_at_scan_mpp(self):
         """Scan the focus regions at the scan mpp."""
-        pass
+
+        # new focus regions list
+        new_focus_regions = []
+
+        # first batch the focus regions
+        batches = create_list_of_batches_from_list(
+            self.focus_regions, scanning_batch_size
+        )
+
+        ray.shutdown()
+        ray.init()
+
+        # create a list of scanners (num_scanners)
+        scanners = [
+            PL2Scanner.remote(self.wsi_path, self.scan_mpp) for _ in range(num_scanners)
+        ]
+
+        # progress bar for tracking the scanning process
+        pbar = tqdm(total=len(self.focus_regions), desc="Scanning focus regions")
+
+        # scan the focus regions using the async_scan_focus_region method
+        for batch in batches:
+            futures = [
+                scanner.async_scan_focus_region.remote(region)
+                for scanner, region in zip(scanners, batch)
+            ]
+            results = ray.get(futures)
+            new_focus_regions.extend(results)
+
+            pbar.update(len(batch))
+
+        pbar.close()
+        ray.shutdown()
+
+        self.focus_regions = new_focus_regions
 
 
 if __name__ == "__main__":
@@ -209,3 +244,4 @@ if __name__ == "__main__":
     )
 
     scanner.crop_images_at_scan_mpp()
+    scanner.scan_at_scan_mpp()
