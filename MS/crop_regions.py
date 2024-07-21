@@ -80,7 +80,7 @@ for slide in tqdm(ndpi_slides, desc="Cropping From Slides"):
             current_idx += 1
 
     except Exception as e:
-        raise e
+        # raise e
 
         # add the slide to the problem slides
         problem_slides.append(slide)
