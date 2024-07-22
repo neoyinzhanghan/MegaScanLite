@@ -7,7 +7,7 @@ from utils import crop_image_at_mpp, create_list_of_batches_from_list
 from config import *
 from MS.RegionCropManager import WSICropper
 from tqdm import tqdm
-from MS.MSScanner import PL2Scanner
+from MS.PL2ScanManager import PL2Scanner
 
 
 class MSScanner:
