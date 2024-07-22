@@ -27,7 +27,7 @@ class WSICropper:
             level_0_coord = focus_region.level_0_coord
 
             level_0_height = focus_region.level_0_height
-            level_0_width = focus_region.level_0_widthsss
+            level_0_width = focus_region.level_0_width
 
             # use the crop_image_at_mpp function to crop the image
 
