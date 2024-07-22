@@ -199,7 +199,12 @@ class MSScanner:
 
         # create a list of scanners (num_scanners)
         scanners = [
-            PL2Scanner.remote(self.wsi_path, self.scan_mpp) for _ in range(num_scanners)
+            PL2Scanner.remote(
+                model_path=self.wsi_path,
+                expected_image_size=focus_region_scan_mpp_height,
+                scan_mpp=self.scan_mpp,
+            )
+            for _ in range(num_scanners)
         ]
 
         # progress bar for tracking the scanning process
