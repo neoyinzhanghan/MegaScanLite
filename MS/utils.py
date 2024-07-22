@@ -22,6 +22,13 @@ def crop_image_at_mpp(level_0_coord, height, width, mpp, wsi):
     base_mpp_x, base_mpp_y = map(float, wsi.properties["openslide.mpp-x"]), map(
         float, wsi.properties["openslide.mpp-y"]
     )
+
+    if type(base_mpp_x) != float:
+        print("Erroneous base_mpp_x", base_mpp_x)
+
+        import sys
+
+        sys.exit()
     scale_x = base_mpp_x / mpp
     scale_y = base_mpp_y / mpp
 
@@ -48,7 +55,6 @@ def crop_image_at_mpp(level_0_coord, height, width, mpp, wsi):
 
 
 def create_list_of_batches_from_list(lst, batch_size):
-    """ Create a list of batches from a list of items.
-    """
+    """Create a list of batches from a list of items."""
 
     return [lst[i : i + batch_size] for i in range(0, len(lst), batch_size)]
