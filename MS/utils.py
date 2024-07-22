@@ -19,9 +19,9 @@ def crop_image_at_mpp(level_0_coord, height, width, mpp, wsi):
     """
 
     # Calculate the scale factor from the desired mpp to the base level mpp
-    base_mpp_x, base_mpp_y = map(float, wsi.properties["openslide.mpp-x"]), map(
-        float, wsi.properties["openslide.mpp-y"]
-    )
+    base_mpp_x = float(wsi.properties["openslide.mpp-x"])
+
+    base_mpp_y = float(wsi.properties["openslide.mpp-y"])
 
     if type(base_mpp_x) != float:
         print("Erroneous base_mpp_x", base_mpp_x)
