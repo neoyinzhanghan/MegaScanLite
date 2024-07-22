@@ -47,7 +47,8 @@ def get_feat_extract_augmentation_pipeline(image_size):
             A.Affine(shear=(-10, 10), p=0.3),
             A.ISONoise(
                 color_shift=(0.01, 0.02),
-                intensity=(0.05, 0.01),
+                # intensity=(0.05, 0.01),
+                intensity=(0.01, 0.05),
                 always_apply=False,
                 p=0.2,
             ),
