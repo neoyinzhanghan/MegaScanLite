@@ -244,8 +244,8 @@ if __name__ == "__main__":
     scanner = MSScanner(
         wsi_path=wsi_path,
         scan_mpp=scan_mpp,
-        focus_region_level_0_height=focus_region_scan_mpp_height,
-        focus_region_level_0_width=focus_region_scan_mpp_width,
+        focus_regions_scan_mpp_height=focus_region_scan_mpp_height,
+        focus_regions_scan_mpp_width=focus_region_scan_mpp_width,
     )
 
     scanner.crop_images_at_scan_mpp()
