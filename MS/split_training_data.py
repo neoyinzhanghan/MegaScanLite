@@ -9,7 +9,6 @@ def create_dir_if_not_exists(dir_path):
 
 
 def split_data(data_dir, save_dir, train_ratio, val_ratio, test_ratio):
-    # Ensure the proportions add up to 1
     assert (
         round(train_ratio + val_ratio + test_ratio, 10) == 1
     ), "The sum of train, val, and test ratios must be 1."
@@ -31,48 +30,28 @@ def split_data(data_dir, save_dir, train_ratio, val_ratio, test_ratio):
     for class_folder in tqdm(class_folders, desc="Processing Classes"):
         class_path = os.path.join(data_dir, class_folder)
 
-        print("Compiling Image Paths")
-        images = np.array(
-            [
-                f
-                for f in os.listdir(class_path)
-                if os.path.isfile(os.path.join(class_path, f))
-            ]
-        )
-        print("Image Paths Compiled")
+        # Create directories for each class in train, val, and test
+        train_class_dir = os.path.join(train_dir, class_folder)
+        val_class_dir = os.path.join(val_dir, class_folder)
+        test_class_dir = os.path.join(test_dir, class_folder)
+        create_dir_if_not_exists(train_class_dir)
+        create_dir_if_not_exists(val_class_dir)
+        create_dir_if_not_exists(test_class_dir)
 
-        print("Starting shuffle")
-        np.random.shuffle(images)
-        print("Shuffle complete")
+        # Process each image directly
+        for image in tqdm(os.listdir(class_path), desc="Processing Images"):
+            if image.endswith((".jpg", ".png", ".jpeg", ".tif")):
+                rnd = np.random.random()
+                if rnd < train_ratio:
+                    target_dir = train_class_dir
+                elif rnd < train_ratio + val_ratio:
+                    target_dir = val_class_dir
+                else:
+                    target_dir = test_class_dir
 
-        train_split = int(train_ratio * len(images))
-        val_split = int(val_ratio * len(images))
-
-        train_images = images[:train_split]
-        val_images = images[train_split : train_split + val_split]
-        test_images = images[train_split + val_split :]
-
-        # Create symlinks instead of copying files
-        for image in tqdm(
-            train_images, desc=f"Linking train images for {class_folder}", leave=False
-        ):
-            dest_dir = os.path.join(train_dir, class_folder)
-            create_dir_if_not_exists(dest_dir)
-            os.symlink(os.path.join(class_path, image), os.path.join(dest_dir, image))
-
-        for image in tqdm(
-            val_images, desc=f"Linking val images for {class_folder}", leave=False
-        ):
-            dest_dir = os.path.join(val_dir, class_folder)
-            create_dir_if_not_exists(dest_dir)
-            os.symlink(os.path.join(class_path, image), os.path.join(dest_dir, image))
-
-        for image in tqdm(
-            test_images, desc=f"Linking test images for {class_folder}", leave=False
-        ):
-            dest_dir = os.path.join(test_dir, class_folder)
-            create_dir_if_not_exists(dest_dir)
-            os.symlink(os.path.join(class_path, image), os.path.join(dest_dir, image))
+                os.symlink(
+                    os.path.join(class_path, image), os.path.join(target_dir, image)
+                )
 
 
 if __name__ == "__main__":
