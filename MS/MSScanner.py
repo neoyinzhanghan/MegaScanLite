@@ -144,42 +144,48 @@ class MSScanner:
     def crop_images_at_scan_mpp(self):
         """Crop the focus regions at the scan mpp."""
 
-        # new focus regions list
-        new_focus_regions = []
-
-        # create a list of batches of focus regions
-        batches = create_list_of_batches_from_list(
-            self.focus_regions, scanning_batch_size
-        )
-
+        # Shutdown any previous instance and reinitialize Ray
         ray.shutdown()
         ray.init()
 
-        # create a list of croppers (num_croppers)
+        # Create a list of croppers (num_croppers)
         croppers = [
             WSICropper.remote(self.wsi_path, self.scan_mpp) for _ in range(num_croppers)
         ]
 
-        # progress bar for tracking the cropping process
+        # New focus regions list
+        new_focus_regions = []
+
+        # Create a list of batches of focus regions
+        batches = create_list_of_batches_from_list(self.focus_regions, scanning_batch_size)
+
+        # Progress bar for tracking the cropping process
         pbar = tqdm(total=len(self.focus_regions), desc="Cropping focus regions")
 
-        # crop the focus regions using the async_crop_focus_region method
-        for batch in batches:
-            futures = [
-                cropper.async_crop_focus_region.remote(region)
-                for cropper, region in zip(croppers, batch)
-            ]
-            results = ray.get(futures)
-            new_focus_regions.extend(results)
+        # Crop the focus regions using the async_crop_focus_region method
+        futures = []
+        for i in range(len(batches)):
+            batch = batches[i]
+            future = croppers[i % num_croppers].async_crop_focus_regions_batch.remote(
+                batch, self.scan_mpp
+            )
+            futures.append(future)
 
-            pbar.update(len(batch))
+        # Collect results as futures complete and update the progress bar
+        for future in ray.get(futures):
+            results = ray.get(future)  # Retrieve results from each future
+            new_focus_regions.extend(results)  # Add results to new_focus_regions list
+            pbar.update(len(results))  # Update the progress bar based on the number of items processed
 
-        pbar.close()
-
-        # shutdown ray
+        # Shutdown Ray
         ray.shutdown()
 
+        # Close the progress bar
+        pbar.close()
+
+        # Update the class or instance variable with new focus regions
         self.focus_regions = new_focus_regions
+
 
     def scan_at_scan_mpp(self):
         """Scan the focus regions at the scan mpp."""

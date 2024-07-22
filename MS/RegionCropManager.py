@@ -17,7 +17,7 @@ class WSICropper:
         self.wsi_path = wsi_path
         self.mpp = mpp
 
-    def async_crop_focus_region(self, focus_regions, mpp):
+    def async_crop_focus_regions_batch(self, focus_regions, mpp):
 
         # traverse through a list of focus regions
 
