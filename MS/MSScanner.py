@@ -68,7 +68,7 @@ class MSScanner:
         self.level_0_mpp = float(wsi.properties["openslide.mpp-x"])
 
         # calculate the scan level downsampling rate from level 0
-        self.downsample_factor_from_level_0 = self.level_0_mpp / self.scan_mpp
+        self.downsample_factor_from_level_0 = self.scan_mpp / self.level_0_mpp
 
         # calculate the best scan level
         self.best_scan_level = wsi.get_best_level_for_downsample(
