@@ -28,7 +28,7 @@ def split_data(data_dir, save_dir, train_ratio, val_ratio, test_ratio):
         f for f in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, f))
     ]
 
-    for class_folder in tqdm(class_folders, desc="Processing classes"):
+    for class_folder in tqdm(class_folders, desc="Processing Classes"):
         class_path = os.path.join(data_dir, class_folder)
         images = np.array(
             [
