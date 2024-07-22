@@ -401,14 +401,14 @@ if __name__ == "__main__":
     # Train the model
     train_model(downsample_factor=1)
 
-    print("Training with downsample factor 2")
-    # Train the model
-    train_model(downsample_factor=2)
+    # print("Training with downsample factor 2")
+    # # Train the model
+    # train_model(downsample_factor=2)
 
-    print("Training with downsample factor 4")
-    # Train the model
-    train_model(downsample_factor=4)
+    # print("Training with downsample factor 4")
+    # # Train the model
+    # train_model(downsample_factor=4)
 
-    print("Training with downsample factor 8")
-    # Train the model
-    train_model(downsample_factor=8)
+    # print("Training with downsample factor 8")
+    # # Train the model
+    # train_model(downsample_factor=8)
