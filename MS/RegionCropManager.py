@@ -43,8 +43,8 @@ class WSICropper:
                 level_0_width % downsample_factor == 0
             ), f"Width {level_0_width} is not divisible by the downsample factor {downsample_factor}, when cropping focus region at {level_0_coord} with height {level_0_height} and width {level_0_width} at {level_0_mpp} mpp"
 
-            height = level_0_height // downsample_factor
-            width = level_0_width // downsample_factor
+            height = int(level_0_height // downsample_factor)
+            width = int(level_0_width // downsample_factor)
 
             image_crop = crop_image_at_mpp(
                 level_0_coord, height=height, width=width, mpp=mpp, wsi=wsi
