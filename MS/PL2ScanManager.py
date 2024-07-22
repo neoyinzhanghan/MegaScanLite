@@ -409,6 +409,6 @@ if __name__ == "__main__":
     # # Train the model
     # train_model(downsample_factor=4)
 
-    # print("Training with downsample factor 8")
-    # # Train the model
-    # train_model(downsample_factor=8)
+    print("Training with downsample factor 8")
+    # Train the model
+    train_model(downsample_factor=8)
