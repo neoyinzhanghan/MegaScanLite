@@ -19,8 +19,8 @@ class MSScanner:
     - downsample_factor_from_level_0
     - level_0_width
     - level_0_height
-    - scan_level_width
-    - scan_level_height
+    - scan_mpp_width
+    - scan_mpp_height
     - focus_regions_level_0_height
     - focus_regions_level_0_width
     - focus_regions_scan_mpp_height
@@ -53,8 +53,8 @@ class MSScanner:
         self.verbose = verbose
         self.hoarding = hoarding
         self.result_dir = result_dir
-        self.focus_region_scan_mpp_height = focus_region_scan_mpp_height
-        self.focus_region_scan_mpp_width = focus_region_scan_mpp_width
+        self.focus_regions_scan_mpp_height = focus_regions_scan_mpp_height
+        self.focus_regions_scan_mpp_width = focus_regions_scan_mpp_width
 
         # first open the wsi
         wsi = openslide.OpenSlide(self.wsi_path)
@@ -76,40 +76,38 @@ class MSScanner:
         )
 
         # calculate the scan level dimensions based on the level_0 dimensions
-        self.scan_level_width = int(level_0_width / self.downsample_factor_from_level_0)
-        self.scan_level_height = int(
-            level_0_height / self.downsample_factor_from_level_0
-        )
+        self.scan_mpp_width = int(level_0_width / self.downsample_factor_from_level_0)
+        self.scan_mpp_height = int(level_0_height / self.downsample_factor_from_level_0)
 
         # if the downsampling rate is not an integer, raise an error
         assert (
-            self.scan_level_width.is_integer()
-        ), f"Scan level width {self.scan_level_width} is not an integer"
+            self.scan_mpp_width.is_integer()
+        ), f"Scan mpp width {self.scan_mpp_width} is not an integer"
         assert (
-            self.scan_level_height.is_integer()
-        ), f"Scan level height {self.scan_level_height} is not an integer"
+            self.scan_mpp_height.is_integer()
+        ), f"Scan mpp height {self.scan_mpp_height} is not an integer"
 
         # calculate the focus region dimensions at the scan level
         self.focus_regions_level_0_height = int(
-            self.focus_regions_scan_level_height * self.downsample_factor_from_level_0
+            self.focus_regions_scan_mpp_height * self.downsample_factor_from_level_0
         )
 
         self.focus_regions_level_0_width = int(
-            self.focus_regions_scan_level_width * self.downsample_factor_from_level_0
+            self.focus_regions_scan_mpp_width * self.downsample_factor_from_level_0
         )
 
         # use the scan level dimensions to get the list of all (TL_x, TL_y) coordinates of the focus regions at level 0 and the scan level
 
-        num_x = int(self.scan_level_width / self.focus_regions_scan_level_width)
-        num_y = int(self.scan_level_height / self.focus_regions_scan_level_height)
+        num_x = int(self.scan_mpp_width / self.focus_regions_scan_mpp_width)
+        num_y = int(self.scan_mpp_height / self.focus_regions_scan_mpp_height)
 
         scan_mpp_coords = []
         level_0_coords = []
 
         for i in range(num_x):
             for j in range(num_y):
-                TL_x = i * self.focus_regions_scan_level_width
-                TL_y = j * self.focus_regions_scan_level_height
+                TL_x = i * self.focus_regions_scan_mpp_width
+                TL_y = j * self.focus_regions_scan_mpp_height
 
                 scan_mpp_coords.append((TL_x, TL_y))
 
