@@ -1,5 +1,5 @@
 import os
-import random
+import numpy as np
 from tqdm import tqdm
 
 
@@ -30,12 +30,12 @@ def split_data(data_dir, save_dir, train_ratio, val_ratio, test_ratio):
 
     for class_folder in tqdm(class_folders, desc="Processing classes"):
         class_path = os.path.join(data_dir, class_folder)
-        images = [
+        images = np.array([
             f
             for f in os.listdir(class_path)
             if os.path.isfile(os.path.join(class_path, f))
-        ]
-        random.shuffle(images)
+        ])
+        np.random.shuffle(images)
 
         train_split = int(train_ratio * len(images))
         val_split = int(val_ratio * len(images))
