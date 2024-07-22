@@ -30,6 +30,8 @@ def split_data(data_dir, save_dir, train_ratio, val_ratio, test_ratio):
 
     for class_folder in tqdm(class_folders, desc="Processing Classes"):
         class_path = os.path.join(data_dir, class_folder)
+
+        print("Compiling Image Paths")
         images = np.array(
             [
                 f
@@ -37,6 +39,7 @@ def split_data(data_dir, save_dir, train_ratio, val_ratio, test_ratio):
                 if os.path.isfile(os.path.join(class_path, f))
             ]
         )
+        print("Image Paths Compiled")
 
         print("Starting shuffle")
         np.random.shuffle(images)
