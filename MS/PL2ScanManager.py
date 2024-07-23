@@ -22,7 +22,7 @@ from torch.utils.data import WeightedRandomSampler
 
 num_epochs = 25
 default_config = {"lr": 3.56e-06}  # 1.462801279401232e-06}
-data_dir = "/media/hdd3/neo/PL1_data_v2_split"
+data_dir = "/media/hdd3/neo/PL2_data_v2_split"
 num_gpus = 3
 num_workers = 30
 downsample_factor = 8
