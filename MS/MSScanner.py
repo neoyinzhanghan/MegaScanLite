@@ -241,7 +241,7 @@ if __name__ == "__main__":
     # os.environ["RAY_TEMP_DIR"] = ray_tmp_dir
 
     wsi_path = (
-        "/media/hdd1/neo/BMA_AML_lite/H23-568;S13;MSK1 - 2023-08-24 22.09.58.ndpi"
+        "/media/hdd3/neo/test_slides/H23-568;S13;MSK1 - 2023-08-24 22.09.58.ndpi"
     )
 
     # initialize the scanner object
