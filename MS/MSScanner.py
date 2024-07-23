@@ -68,7 +68,7 @@ class MSScanner:
         self.level_0_mpp = float(wsi.properties["openslide.mpp-x"])
 
         # calculate the scan level downsampling rate from level 0
-        self.downsample_factor_from_level_0 = self.scan_mpp / self.level_0_mpp
+        self.downsample_factor_from_level_0 = self.scan_mpp / self.level_0_mpp / self.scan_mpp
 
         # calculate the best scan level
         self.best_scan_level = wsi.get_best_level_for_downsample(
@@ -240,9 +240,11 @@ if __name__ == "__main__":
 
     # os.environ["RAY_TEMP_DIR"] = ray_tmp_dir
 
-    wsi_path = (
-        "/media/hdd3/neo/test_slides/H23-568;S13;MSK1 - 2023-08-24 22.09.58.ndpi"
-    )
+    # wsi_path = (
+    #     "/media/hdd1/neo/BMA_AML_lite/H23-568;S13;MSK1 - 2023-08-24 22.09.58.ndpi"
+    # )
+
+    wsi_path = "~/Documents/neo/H23-568;S13;MSK1 - 2023-08-24 22.09.58.ndpi"
 
     # initialize the scanner object
     scanner = MSScanner(
