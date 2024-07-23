@@ -244,7 +244,7 @@ if __name__ == "__main__":
     #     "/media/hdd1/neo/BMA_AML_lite/H23-568;S13;MSK1 - 2023-08-24 22.09.58.ndpi"
     # )
 
-    wsi_path = "~/Documents/neo/H23-568;S13;MSK1 - 2023-08-24 22.09.58.ndpi"
+    wsi_path = "/home/greg/Documents/neo/H23-568;S13;MSK1 - 2023-08-24 22.09.58.ndpi"
 
     # initialize the scanner object
     scanner = MSScanner(
