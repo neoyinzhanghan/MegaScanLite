@@ -20,11 +20,11 @@ from torch.utils.data import WeightedRandomSampler
 ####### DEFINE HYPERPARAMETERS AND DATA DIRECTORIES ########################
 ############################################################################
 
-num_epochs = 5
+num_epochs = 25
 default_config = {"lr": 3.56e-06}  # 1.462801279401232e-06}
 data_dir = "/media/hdd3/neo/PL1_data_v2_split"
 num_gpus = 3
-num_workers = 20
+num_workers = 30
 downsample_factor = 8
 batch_size = 8
 img_size = 512
@@ -397,18 +397,18 @@ class PL2Scanner:
 if __name__ == "__main__":
     # Run training for each downsampling factor
 
-    # print("Training with downsample factor 1")
-    # # Train the model
-    # train_model(downsample_factor=1)
-
-    # print("Training with downsample factor 2")
-    # # Train the model
-    # train_model(downsample_factor=2)
-
-    # print("Training with downsample factor 4")
-    # # Train the model
-    # train_model(downsample_factor=4)
+    print("Training with downsample factor 1")
+    # Train the model
+    train_model(downsample_factor=1)
 
     print("Training with downsample factor 8")
     # Train the model
     train_model(downsample_factor=8)
+
+    print("Training with downsample factor 2")
+    # Train the model
+    train_model(downsample_factor=2)
+
+    print("Training with downsample factor 4")
+    # Train the model
+    train_model(downsample_factor=4)

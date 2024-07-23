@@ -55,8 +55,8 @@ def split_data(data_dir, save_dir, train_ratio, val_ratio, test_ratio):
 
 
 if __name__ == "__main__":
-    data_dir = "/media/hdd3/neo/PL1_data_v2"
-    save_dir = "/media/hdd3/neo/PL1_data_v2_split"
+    data_dir = "/media/hdd3/neo/PL2_data_v2"
+    save_dir = "/media/hdd3/neo/PL2_data_v2_split"
 
     train_ratio = 0.7
     val_ratio = 0.2
